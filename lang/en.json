@@ -1,0 +1,15 @@
+{
+    "0 件": "0 items",
+    "1 ページの行数": "Rows per page",
+    ":from–:to / :total 件": ":from–:to of :total",
+    ":name をドラッグして並べ替え": "Drag :name to reorder",
+    "ドラッグして並べ替え": "Drag to reorder",
+    "ページ番号": "Page number",
+    "削除": "Delete",
+    "前のページ": "Previous page",
+    "必須": "Required",
+    "最初のページ": "First page",
+    "最後のページ": "Last page",
+    "次のページ": "Next page",
+    "読み込んでいます…": "Loading…"
+}

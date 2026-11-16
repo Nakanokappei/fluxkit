@@ -1,0 +1,27 @@
+{
+    "$schema": "https://getcomposer.org/schema.json",
+    "name": "cc9/fluxkit",
+    "description": "Flux と Livewire の上に重ねる Blade の部品集 (<x-fluxkit::card> など)",
+    "type": "library",
+    "license": "proprietary",
+    "homepage": "https://github.com/Nakanokappei/fluxkit",
+    "require": {
+        "php": "^8.4",
+        "illuminate/support": "^13.0",
+        "illuminate/view": "^13.0",
+        "livewire/flux": "^2.13",
+        "livewire/livewire": "^4.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "Cc9\\Fluxkit\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Cc9\\Fluxkit\\FluxkitServiceProvider"
+            ]
+        }
+    }
+}

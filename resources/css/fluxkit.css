@@ -1,0 +1,34 @@
+/*
+ * fluxkit の部品の CSS。アプリの CSS (Tailwind v4) から @import する:
+ *
+ *     @import '../../vendor/cc9/fluxkit/resources/css/fluxkit.css';
+ *     @source '../../vendor/cc9/fluxkit/resources/views';
+ */
+
+/* サーバーの処理を待っているあいだの印 (components/busy.blade.php)。Livewire が data-busy を付けているあいだだけ出し、
+   ページ全体のマウスカーソルを待ちの形にする (ボタンや表の上でも)。 */
+[data-ui-busy] {
+    display: none;
+}
+
+[data-ui-busy][data-busy] {
+    display: flex;
+}
+
+html:has([data-ui-busy][data-busy]) * {
+    cursor: wait !important;
+}
+
+.ui-busy-bar {
+    animation: ui-busy-slide 1.2s ease-in-out infinite;
+}
+
+@keyframes ui-busy-slide {
+    from {
+        transform: translateX(-100%);
+    }
+
+    to {
+        transform: translateX(300%);
+    }
+}
