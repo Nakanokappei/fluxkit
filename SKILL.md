@@ -304,6 +304,8 @@ document.addEventListener('alpine:init', () => registerFluxkitComponents(window.
 1. 決まり §1 の 2（どこに作るか）を利用者に確かめる
 2. `resources/views/components/<名前>.blade.php` に書く。頭の `{{-- --}}` に、何の部品か・例・props を書く
 3. `$attributes->merge()` / `->class()` で呼び出し側のクラスと属性を受ける。文言は `__('…')`、既定値は props で差し替えられるように
+   **アイコンは Flux の標準（Heroicons）だけを `flux:icon` で使う。** 標準に無いもの（Lucide など）は `resources/views/components/icon/<名前>.blade.php`
+   に置き、`<x-fluxkit::icon.<名前>>` で呼ぶ（アプリの `resources/views/flux/icon/` に頼ると、ほかのアプリで描けない。v0.1.2）
 4. 動きが要るなら `resources/js/fluxkit.js` の `registerFluxkitComponents` に `Alpine.data` を足す。CSS が要るなら `resources/css/fluxkit.css`
 5. プレビュー（`resources/views/preview.blade.php`）・この SKILL.md（§4・§5）・`lang/en.json` を直す
 6. 使うアプリで（§2 の path で指して）、画面の HTML が変わっていないか（直したとき）・テストが通るかを確かめる

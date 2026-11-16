@@ -1,5 +1,12 @@
 # 変更の記録
 
+## v0.1.2 (2026-11-17)
+
+- `sort-handle` のつまみのアイコン（Lucide の grip-vertical）を fluxkit の中に持った（`x-fluxkit::icon.grip-vertical`）。
+  それまでは使うアプリの `resources/views/flux/icon/grip-vertical.blade.php` に頼っていて、持たないアプリでは 500 になった。
+  描画は変わらない
+- プレイグラウンド（`playground/`）: 部品を単体で見て直すための確かめ用の Laravel（Docker）
+
 ## v0.1.1 (2026-11-16)
 
 - 部品の頭のコメントの例から `__('…')` を外した（訳のファイルの鍵を数えるアプリで、例の文が鍵に数えられないように）。

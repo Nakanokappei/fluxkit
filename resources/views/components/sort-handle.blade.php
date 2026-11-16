@@ -19,5 +19,5 @@
     ]) }}
     title="{{ __('ドラッグして並べ替え') }}"
     aria-label="{{ __(':name をドラッグして並べ替え', ['name' => $name]) }}">
-    <flux:icon.grip-vertical variant="mini" />
+    <x-fluxkit::icon.grip-vertical variant="mini" />
 </div>

@@ -1,0 +1,10 @@
+/* プレイグラウンドの CSS。fluxkit はリポジトリの直下 (/fluxkit) を直に読む (vendor のリンク越しだと Tailwind が辿らない)。 */
+@import 'tailwindcss';
+@import '../../vendor/livewire/flux/dist/flux.css';
+@import '../../../../resources/css/fluxkit.css';
+
+@source '../views';
+@source '../../../../resources/views';
+@source '../../vendor/livewire/flux/stubs/**/*.blade.php';
+
+@custom-variant dark (&:where(.dark, .dark *));
