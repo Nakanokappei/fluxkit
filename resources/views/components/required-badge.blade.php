@@ -4,7 +4,7 @@
     使えないときだけ、この部品を名札の文の後ろに置く。見た目は flux:label の badge と同じクラス。読み上げは欄の
     aria-required="true" に任せるので、ここは aria-hidden (二重に読まれないように。Flux も同じ)。
 
-        <label for="x">{{ __('コード') }} <x-fluxkit::required-badge /></label>
+        <label for="x">{{ $label }} <x-fluxkit::required-badge /></label>
         <select id="x" aria-required="true">…</select>
 --}}
 <span class="ms-1.5 text-zinc-800/70 text-xs font-medium bg-zinc-800/5 px-1.5 py-1 -my-1 rounded-[4px]" aria-hidden="true">{{ __('必須') }}</span>

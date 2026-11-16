@@ -1,7 +1,7 @@
 {{--
     一覧が空のときの小さな一文。枠 (x-fluxkit::card) の中に p-4 で出す。
 
-        <x-fluxkit::empty-note>{{ __('項目はまだありません。…') }}</x-fluxkit::empty-note>
+        <x-fluxkit::empty-note>{{ $emptyText }}</x-fluxkit::empty-note>
 
       bare  true なら枠を付けない。表の枠 (x-fluxkit::card) の中で、表の代わりに出すときに使う
 

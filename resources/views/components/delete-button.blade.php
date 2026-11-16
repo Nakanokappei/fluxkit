@@ -1,7 +1,7 @@
 {{-- 一覧の行の「削除」ボタン。ゴーストのごみ箱のボタンに確認の文を添える。
 
         <x-fluxkit::delete-button action="delete({{ $item->id }})"
-            :confirm="__('この項目を削除します。元に戻せません。よろしいですか？')" />
+            :confirm="$confirmText" />
 
       action   押したときの Livewire の呼び出し (wire:click)
       confirm  押す前に出す確かめの文 (wire:confirm)。null なら確かめずに呼ぶ (断る理由を画面で出すとき)
