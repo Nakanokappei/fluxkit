@@ -1,9 +1,9 @@
 {
     "$schema": "https://getcomposer.org/schema.json",
     "name": "cc9/fluxkit",
-    "description": "Flux と Livewire の上に重ねる Blade の部品集 (<x-fluxkit::card> など)",
+    "description": "Blade components layered on top of Flux and Livewire (<x-fluxkit::card> and more)",
     "type": "library",
-    "license": "proprietary",
+    "license": "MIT",
     "homepage": "https://github.com/Nakanokappei/fluxkit",
     "require": {
         "php": "^8.4",

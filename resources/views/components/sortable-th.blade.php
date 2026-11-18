@@ -1,12 +1,12 @@
-{{-- 列見出しで並べ替える表の見出しのセル。th と flux:table.sortable の組と aria-sort を 1 つにした。
+{{-- A header cell for tables sorted by column header. Combines th, flux:table.sortable and aria-sort into one.
 
-        <x-fluxkit::sortable-th column="name" :sort="$sort" :direction="$direction">{{ __('氏名') }}</x-fluxkit::sortable-th>
+        <x-fluxkit::sortable-th column="name" :sort="$sort" :direction="$direction">{{ $nameLabel }}</x-fluxkit::sortable-th>
 
-      column     並べ替える列の名前。押すと Livewire の sort('<column>') を呼ぶ (同じ列をもう一度押すと逆順)
-      sort       いま並べ替えている列
-      direction  asc か desc
+      column     The column name to sort by. Clicking calls Livewire's sort('<column>') (clicking the same column again reverses)
+      sort       The column currently sorted by
+      direction  asc or desc
 
-    渡した class は th に足す (狭い列なら w-px whitespace-nowrap)。 --}}
+    The passed class is added to th (narrow columns: w-px whitespace-nowrap). --}}
 @props(['column', 'sort', 'direction'])
 
 <th {{ $attributes->merge(['class' => 'group/sortable px-3 py-2 font-medium']) }}

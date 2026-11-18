@@ -1,15 +1,15 @@
-{{-- 一覧の検索欄。打つ間の待ち・消し方 (欄の ×)・type=search・aria-label を揃える。
+{{-- The search field of a list. Standardizes the typing delay, clearing (the × in the field), type=search and aria-label.
 
-        <x-fluxkit::search-input model="search" :label="__('ユーザーを検索')"
-            :placeholder="__('氏名・メールアドレスで検索')" class="w-72" data-test="user-search" />
+        <x-fluxkit::search-input model="search" :label="$searchLabel"
+            :placeholder="$searchPlaceholder" class="w-72" data-test="user-search" />
 
-      model     打った語を受ける Livewire のプロパティ (wire:model.live.debounce)
-      label     読み上げの名前 (aria-label)。見出しの隣に置くので画面には出ない
-      debounce  打ち終えてから送るまでのミリ秒。既定 400。検索ごとに記録などを残す画面では、
-                変えると記録の件数が変わる
+      model     The Livewire property that receives the typed text (wire:model.live.debounce)
+      label     Accessible name (aria-label). Not shown on screen, since the field sits next to a heading
+      debounce  Milliseconds between the last keystroke and sending. Default 400. On screens that log each
+                search, changing it changes the number of log entries
 
-    消すのは欄の × (clearable)。ほかの属性 (placeholder・size・class・data-test) は flux:input に渡る。
-    「押して探す」形の欄には使わない。 --}}
+    Clearing is the × in the field (clearable). Other attributes (placeholder, size, class, data-test) go to flux:input.
+    Do not use it for fields that search only when a button is pressed. --}}
 @props(['model', 'label', 'debounce' => 400])
 
 <flux:input type="search" icon="magnifying-glass" clearable :aria-label="$label"

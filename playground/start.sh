@@ -1,5 +1,5 @@
 #!/bin/sh
-# プレイグラウンドを起こす (コンテナの中で走る)。最初の 1 回は setup.sh で Laravel を作る。
+# Starts the playground (runs inside the container). On first run, setup.sh creates the Laravel app.
 set -eu
 cd /fluxkit/playground
 [ -f app/artisan ] || sh ./setup.sh

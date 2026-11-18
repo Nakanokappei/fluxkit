@@ -1,20 +1,20 @@
 {{--
-    行を押して右の詳細を開く表の、キーボードの入口。<tr wire:click="select(id)"> だけでは Tab で行に
-    届かない (tr はフォーカスを受けない)。名前のセルの中身をこのボタンで包み、Tab で届いて Enter・Space で
-    開けるようにする。
+    The keyboard entry point for tables where clicking a row opens its details on the right. With only
+    <tr wire:click="select(id)">, Tab never reaches the row (tr does not take focus). Wrap the contents of the
+    name cell in this button so Tab reaches it and Enter or Space opens it.
 
         <tr wire:click="select({{ $rule->id }})" …>
             <td class="px-3 py-2 font-medium">
                 <x-fluxkit::row-select-button action="select({{ $rule->id }})" :selected="$isSelected">{{ $rule->name }}</x-fluxkit::row-select-button>
             </td>
 
-      action    押したときの Livewire の呼び出し (tr の wire:click と同じもの)
-      selected  いま開いている行か (aria-pressed で読み上げに伝える)
+      action    The Livewire call made on click (same as the tr's wire:click)
+      selected  Whether this row is the one currently open (announced via aria-pressed)
 
-    **tr の wire:click は消さない** (マウスで行のどこを押しても開く今の使い方を残す)。ボタンは wire:click.stop で、
-    tr の wire:click と 2 回呼ばない (行の中のほかのボタンも .stop にする)。
-    押せない行は disabled を渡す (処理中の行など)。見た目は文字のまま (枠も背景も付けない。フォーカスの輪は
-    ブラウザの既定)。中の並べ方は class で渡す。
+    **Keep the tr's wire:click** (so clicking anywhere on the row with a mouse still opens it). The button uses
+    wire:click.stop so it does not fire together with the tr's wire:click (make other buttons in the row .stop too).
+    Pass disabled for rows that cannot be opened (rows being processed, etc.). It looks like plain text (no border,
+    no background; the focus ring is the browser default). Pass the inner layout as class.
 --}}
 @props(['action', 'selected' => false])
 

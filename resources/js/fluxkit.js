@@ -1,11 +1,11 @@
 /*
- * fluxkit の部品が使う Alpine の部品 (x-data="名前(…)")。
+ * Alpine components used by the fluxkit components (x-data="name(…)").
  *
- * CSP 用の Alpine (Livewire の config livewire.csp_safe) は、Blade の属性の中のアロー関数・if 文・メソッドを持つ
- * x-data="{ … }" を読めない。そうした動きはここに Alpine.data として置き、部品からは名前で呼ぶ。
- * CSP 用でない Alpine でもそのまま動く。
+ * The CSP build of Alpine (Livewire's config livewire.csp_safe) cannot read x-data="{ … }" with arrow functions,
+ * if statements or methods inside Blade attributes. Such behavior lives here as Alpine.data, and components
+ * refer to it by name. It works the same with the non-CSP Alpine.
  *
- * アプリの JS から、Alpine が始まる前 (alpine:init) に 1 回呼ぶ:
+ * Call it once from the app's JS, before Alpine starts (alpine:init):
  *
  *     import { registerFluxkitComponents } from '../../vendor/cc9/fluxkit/resources/js/fluxkit.js';
  *     document.addEventListener('alpine:init', () => registerFluxkitComponents(window.Alpine));
@@ -15,8 +15,9 @@ export function registerFluxkitComponents(Alpine) {
 }
 
 /**
- * 表のページ番号の欄 (components/page-nav.blade.php)。打った番号を 1〜最後のページに丸めて欄に書き戻し、
- * いまのページと違えば page に入れて true を返す (ビューが続けて $wire.gotoPage(page, …) を呼ぶ)。
+ * The page number field of a table (components/page-nav.blade.php). Clamps the typed number to 1..last page,
+ * writes it back to the field, and if it differs from the current page, stores it in page and returns true
+ * (the view then calls $wire.gotoPage(page, …)).
  */
 function pageNavInput(current, last) {
     return {

@@ -1,4 +1,4 @@
-/* プレイグラウンドの CSS。fluxkit はリポジトリの直下 (/fluxkit) を直に読む (vendor のリンク越しだと Tailwind が辿らない)。 */
+/* Playground CSS. fluxkit is read directly from the repository root (/fluxkit); Tailwind does not follow the vendor symlink. */
 @import 'tailwindcss';
 @import '../../vendor/livewire/flux/dist/flux.css';
 @import '../../../../resources/css/fluxkit.css';

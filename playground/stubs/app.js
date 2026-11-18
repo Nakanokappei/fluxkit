@@ -1,4 +1,4 @@
-// プレイグラウンドの JS。Livewire が持つ Alpine に fluxkit の部品 (x-data) を登録する。
+// Playground JS. Registers fluxkit's components (x-data) with the Alpine bundled in Livewire.
 import { registerFluxkitComponents } from '../../../../resources/js/fluxkit.js';
 
 document.addEventListener('alpine:init', () => registerFluxkitComponents(window.Alpine));

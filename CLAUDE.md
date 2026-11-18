@@ -2,61 +2,62 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-fluxkit（`cc9/fluxkit`）で Claude Code が作業するときの指針。**日本語で書き、チャットの返答も日本語で**（識別子は英語）。
+Everything in this repository — docs, code comments, UI text, commit messages — is written in English.
 
-## これは何か
+## What this is
 
-Livewire 4 ＋ Flux 2 の Laravel アプリで使う、無名の Blade コンポーネント集（`<x-fluxkit::card>` など 20 個）。
-**公開リポジトリ**（github.com/Nakanokappei/fluxkit）。部品の一覧・props・使い方・守る決まりは **`SKILL.md`**（最初に読む）。
+A set of anonymous Blade components for Laravel apps built with Livewire 4 + Flux 2 (20 components such as `<x-fluxkit::card>`).
+**Public repository** (github.com/Nakanokappei/fluxkit, MIT). The component list, props, usage and rules live in **`SKILL.md`** (read it first).
 
-- **使っているアプリの業務の語・顧客名・URL・アカウント ID をここに書かない**（公開。コメントや例も同じ）
-- 部品の頭のコメントの例に `__('…')` を書かない（使う側の訳のファイルの鍵の数え上げに拾われる。v0.1.1）
+- **Never write business terms, customer names, URLs or account IDs of the apps using fluxkit here** (it is public; comments and examples too)
+- Do not put `__('…')` in the examples of component header comments (apps that collect translation keys would pick them up; v0.1.1)
 
-## しくみ（複数のファイルにまたがる話）
+## How it fits together (spanning several files)
 
-- `src/FluxkitServiceProvider.php` が全部の入口: `resources/views/components` を無名コンポーネントの名前空間 `fluxkit` に登録、
-  `lang/` を JSON の訳として読み込み、`config('fluxkit.preview.enabled')` のときだけプレビューのルートを足す
-- 部品はクラスを持たない Blade だけ（`@props` で受ける）。アイコンも `components/icon/` に持つ（v0.1.2。Flux のアイコンに頼らない）
-- 文言は部品の中に日本語の `__('…')` で書き、鍵も日本語。英訳は `lang/en.json`。使う側のアプリの `lang/<言語>.json` が勝つ
-- 動きのある部品は、CSP 用の Alpine で読めるよう `resources/js/fluxkit.js` に `Alpine.data` として置き、Blade からは
-  `x-data="名前(…)"` で呼ぶ（Blade の属性にアロー関数・メソッドを持つ `x-data="{ … }"` を書かない）
-- 見た目は Tailwind v4 のクラス。使う側が `@source` で fluxkit のビューを拾う。部品固有の CSS は `resources/css/fluxkit.css`
-- アプリごとに変える値は `config/fluxkit.php`（`page_sizes` など）。`App\…` やルート名を部品に持ち込まない
+- `src/FluxkitServiceProvider.php` is the single entry point: registers `resources/views/components` as the anonymous component
+  namespace `fluxkit`, loads `lang/` as JSON translations, and adds the preview route only when `config('fluxkit.preview.enabled')`
+- Components are class-less Blade only (taking `@props`). Icons are kept in `components/icon/` too (v0.1.2; no reliance on the app's Flux icons)
+- UI text is written in components as English `__('…')`; the English text is the key. The Japanese translation is `lang/ja.json`.
+  The consuming app's `lang/<locale>.json` wins. Renaming a key is a breaking change for apps that override it
+- Behavior lives in `resources/js/fluxkit.js` as `Alpine.data` so the CSP build of Alpine can read it; Blade calls it as
+  `x-data="name(…)"` (never write `x-data="{ … }"` with arrow functions or methods in Blade attributes)
+- Styling is Tailwind v4 classes; consuming apps pick up fluxkit's views with `@source`. Component-specific CSS is `resources/css/fluxkit.css`
+- Per-app values live in `config/fluxkit.php` (`page_sizes`, etc.). Do not bring `App\…` classes or route names into components
 
-## 直して確かめる
+## Change and verify
 
-テスト・リンター・ビルドの手順は無い。確かめるのはプレイグラウンドの画面だけ。
+There are no tests, linters or build steps. Verification is the playground screen only.
 
 ```bash
 cd playground && docker compose up --build    # http://localhost:8095/fluxkit-preview
 ```
 
-- `setup.sh` が `playground/app`（git に入れない）に Laravel を作り、このリポジトリを composer の path リポジトリで symlink する。
-  作り直すときは `playground/app` を消して上げ直す
-- プレビューは Livewire のコンポーネントの外なので `wire:click` は動かない。動きを見るなら `playground/app` に Livewire のコンポーネントを足す
-- 部品を直すとそのまま画面に出る（`playground/README.md`）。部品を足したら `resources/views/preview.blade.php` にも足す
-- **既定の見た目と props の名前は、使っているアプリ全部に効く。** 変えるなら利用者に確かめる
+- `setup.sh` creates a Laravel app in `playground/app` (not committed) and symlinks this repository via a composer path repository.
+  To rebuild, delete `playground/app` and start again. Set `APP_LOCALE=ja` in `playground/app/.env` to check `lang/ja.json`
+- The preview is outside any Livewire component, so `wire:click` does nothing. To check behavior, add a Livewire component to `playground/app`
+- Component edits show up immediately (`playground/README.md`). When adding a component, add it to `resources/views/preview.blade.php` too
+- **Default looks and prop names affect every app using fluxkit.** Ask the user before changing them
 
-## 版を出す
+## Releasing
 
-1. `SKILL.md`（部品の一覧・props・例）・`CHANGELOG.md`・必要なら `lang/en.json` を同じコミットで直す
-2. コミットして、版のタグを打って push（`git tag -a v0.1.2 -m v0.1.2 && git push origin main v0.1.2`）。
-   既定の見た目や props を変えたら minor、足しただけ・直しだけなら patch
-3. 使うアプリで `composer update cc9/fluxkit` して `composer.lock` を PR に入れる（そのアプリの PR の手順で）
-4. 個人のスキルの写し（`~/.claude/skills/fluxkit/SKILL.md` と Windows の `C:\Users\<ユーザー>\.claude\skills\fluxkit\SKILL.md`）を写し直す
+1. Update `SKILL.md` (component list, props, examples), `CHANGELOG.md` and, if needed, `lang/ja.json` in the same commit
+2. Commit, tag the version and push (`git tag -a v0.2.0 -m v0.2.0 && git push origin main v0.2.0`).
+   Minor if default looks, props or translation keys changed; patch if only added or fixed
+3. In each consuming app, run `composer update cc9/fluxkit` and put `composer.lock` in a PR (following that app's PR process)
+4. Recopy the personal skill copies (`~/.claude/skills/fluxkit/SKILL.md` and Windows' `C:\Users\<user>\.claude\skills\fluxkit\SKILL.md`)
 
-## Mac で作業するとき
+## Working on the Mac
 
-- リポジトリは共有 SSD の `/Volumes/Satechi SSD/01_Active/fluxkit`。git・docker は Mac でそのまま走らせる
-- Windows から触ると `._` ファイルができる。コミットの前に `git status` に出ていたら `dot_clean .` で消す
+- The repository is on the shared SSD at `/Volumes/Satechi SSD/01_Active/fluxkit`. Run git and docker directly on the Mac
+- Access from Windows creates `._` files. If they show up in `git status` before committing, remove them with `dot_clean .`
 
-## Windows（デスクトップアプリ ＋ WSL2）で作業するとき
+## Working on Windows (desktop app + WSL2)
 
-- リポジトリは WSL2 の `~/fluxkit`。**git・docker は WSL2 で走らせる**（Windows の git ではコミットしない。実行ビットが落ちる）。
-  込み入ったコマンドは `/tmp/<日付>-<名前>.sh` に書いてから `MSYS_NO_PATHCONV=1 wsl.exe -d Ubuntu bash /tmp/…` で流す
-- `playground/start.sh`・`setup.sh` を Edit・Write で書き換えたら、WSL で `chmod 755` に戻す。改行は LF
+- The repository is `~/fluxkit` in WSL2. **Run git and docker in WSL2** (never commit with Windows git; it drops the executable bit).
+  Write complex commands to `/tmp/<date>-<name>.sh` and run them with `MSYS_NO_PATHCONV=1 wsl.exe -d Ubuntu bash /tmp/…`
+- After rewriting `playground/start.sh` or `setup.sh` with Edit/Write, restore `chmod 755` in WSL. Line endings are LF
 
-## どちらでも
+## Either machine
 
-- 作者は `nakano.kappei@gmail.com`（このリポジトリの git の設定。公開なので会社のアドレスを載せない）
-- コミットメッセージは日本語。末尾に Co-Authored-By の行
+- The author is `nakano.kappei@gmail.com` (this repository's git config; it is public, so never use a work address)
+- Commit messages in English, ending with a Co-Authored-By line

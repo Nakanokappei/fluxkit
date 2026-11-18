@@ -1,19 +1,20 @@
 {{--
-    部署・ラベルなど、利用者が付けた名前を載せるバッジ。Flux のバッジは whitespace-nowrap で折り返さない
-    ので、長い名前が行や列を横に押し広げる。幅に上限を付け、はみ出したぶんは … で切り、全体は title で見せる。
+    A badge carrying a user-given name, such as a department or a label. Flux's badge is whitespace-nowrap and
+    never wraps, so a long name pushes rows and columns wider. This caps the width, truncates the overflow
+    with …, and shows the full name in title.
 
         <x-fluxkit::name-badge :name="$team->name" color="blue" />
         <x-fluxkit::name-badge :name="$tag['name']" :title="$tag['note']" color="sky" />
 
-      name     載せる名前
-      title    ポインタを載せたときに出す文。既定は name (切れていなくても出す)
-      max      幅の上限の Tailwind のクラス。既定は max-w-48 (12rem。全角で 14 字ほど)。変えるときは
-               クラスをそのまま書く (Tailwind は views の中の literal なクラスだけを拾う)
-      color・variant・icon  flux:badge にそのまま渡す
+      name     The name to show
+      title    Text shown on hover. Defaults to name (shown even when not truncated)
+      max      Tailwind class for the max width. Defaults to max-w-48 (12rem). Write the class literally
+               when changing it (Tailwind only picks up literal classes in views)
+      color, variant, icon  Passed straight to flux:badge
 
-    ほかの属性 (class・style・data-test) もバッジに付く。size は sm に決めてある。横に並べて行が
-    詰まったときに縮ませたくない所には class="shrink-0" を渡す。役割・状態など、語が決まっていて短い
-    バッジには使わない (flux:badge のまま)。
+    Other attributes (class, style, data-test) also go on the badge. size is fixed to sm. Where badges sit side
+    by side and must not shrink when the row gets tight, pass class="shrink-0". Do not use it for badges with
+    short, fixed wording such as roles or states (keep flux:badge for those).
 --}}
 @props(['name', 'title' => null, 'max' => 'max-w-48', 'color' => null, 'variant' => null, 'icon' => null])
 

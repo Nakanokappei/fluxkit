@@ -7,11 +7,11 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 
 /**
- * fluxkit の部品を <x-fluxkit::card> の形で使えるようにする。
+ * Makes the fluxkit components available as <x-fluxkit::card> and so on.
  *
- * - 部品は resources/views/components の無名コンポーネント (クラスを持たない)
- * - 部品の中の文は日本語の __('…')。訳は lang/<言語>.json、アプリの lang/<言語>.json が勝つ
- * - プレビュー (config fluxkit.preview) は開発環境だけ
+ * - Components are anonymous components in resources/views/components (no classes)
+ * - Text inside components is English __('…'). Translations live in lang/<locale>.json; the app's lang/<locale>.json wins
+ * - The preview (config fluxkit.preview) is for development only
  */
 final class FluxkitServiceProvider extends ServiceProvider
 {

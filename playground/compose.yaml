@@ -1,4 +1,4 @@
-# fluxkit のプレイグラウンド。使い方は playground/README.md。
+# fluxkit playground. See playground/README.md.
 #
 #   cd playground && docker compose up --build
 #   → http://localhost:8095/fluxkit-preview

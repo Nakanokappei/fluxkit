@@ -1,8 +1,8 @@
 {{-- Credit: Lucide (https://lucide.dev)
 
-    部品の中で使うアイコン (Flux の標準の Heroicons に無いもの)。x-fluxkit::sort-handle のつまみ。flux:icon と同じ形
-    (variant は outline・mini・micro) で描くので、アプリが resources/views/flux/icon/grip-vertical.blade.php を持っていても
-    見た目は同じ。 --}}
+    An icon used inside the components (one not in Flux's standard Heroicons). The grip of x-fluxkit::sort-handle.
+    Drawn the same way as flux:icon (variant is outline, mini or micro), so it looks the same even if the app has
+    its own resources/views/flux/icon/grip-vertical.blade.php. --}}
 
 @props([
     'variant' => 'outline',

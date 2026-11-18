@@ -1,12 +1,12 @@
 {{--
-    一覧が空のときの小さな一文。枠 (x-fluxkit::card) の中に p-4 で出す。
+    A short line shown when a list is empty, inside a frame (x-fluxkit::card) with p-4.
 
         <x-fluxkit::empty-note>{{ $emptyText }}</x-fluxkit::empty-note>
 
-      bare  true なら枠を付けない。表の枠 (x-fluxkit::card) の中で、表の代わりに出すときに使う
+      bare  true omits the frame. Use it inside a table's frame (x-fluxkit::card), in place of the table
 
-    破線の大きな枠で「データが無い」ことを見せるのは x-fluxkit::empty-state。
-    渡した属性 (data-test など) は外側の要素に付く。
+    For a large dashed frame that emphasizes "no data", use x-fluxkit::empty-state.
+    Attributes passed (data-test, …) go on the outer element.
 --}}
 @props(['bare' => false])
 

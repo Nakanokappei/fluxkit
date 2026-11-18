@@ -1,13 +1,13 @@
 {{--
-    表に行が無いときの 1 行。表の幅いっぱいに、薄い色の一文を出す。
+    The single row shown when a table has no rows. A muted line spanning the full table width.
 
         @forelse ($rows as $row) … @empty
-            <x-fluxkit::empty-row :cols="3">{{ __('この期間のエラーはありません。') }}</x-fluxkit::empty-row>
+            <x-fluxkit::empty-row :cols="3">{{ $emptyText }}</x-fluxkit::empty-row>
         @endforelse
 
-      cols  表の列の数 (colspan)
+      cols  Number of table columns (colspan)
 
-    表を出さずに一文だけ出すときは x-fluxkit::empty-note。
+    To show only a line without a table, use x-fluxkit::empty-note.
 --}}
 @props(['cols'])
 

@@ -3,8 +3,8 @@ import laravel from 'laravel-vite-plugin';
 import tailwindcss from '@tailwindcss/vite';
 import { resolve } from 'node:path';
 
-// プレイグラウンドの Vite。コンテナの中で開発サーバーを開き、ブラウザ (ホスト) からは localhost:5173 で読む。
-// fluxkit の CSS・JS・ビューはこのアプリの外 (/fluxkit) にあるので、読んでよい場所に足す。
+// Playground Vite config. Runs the dev server inside the container; the browser (host) loads it from localhost:5173.
+// fluxkit's CSS, JS and views live outside this app (/fluxkit), so that path is added to the allowed locations.
 export default defineConfig({
     plugins: [
         laravel({

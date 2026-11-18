@@ -1,12 +1,14 @@
 @props(['icon', 'title', 'heading' => '', 'subheading' => ''])
 
-{{-- 管理の画面の頭と本文。上にアイコンと大きな見出し (どの管理か)、その下に画面の見出しと説明、本文。
+{{-- Header and body of an admin screen. On top, an icon and a large title (which admin area this is); below it,
+    the screen's heading and description, then the body.
 
-        <x-fluxkit::admin-page icon="cog-6-tooth" :title="__('システム設定')" :heading="__('ユーザー')" :subheading="__('…')">
+        <x-fluxkit::admin-page icon="cog-6-tooth" :title="$areaTitle" :heading="$heading" :subheading="$subheading">
             …
         </x-fluxkit::admin-page>
 
-    管理の種類ごとに薄い包み (アイコンと大きな見出しだけを決めるレイアウト) を作り、各画面はその包みを使うと揃う。 --}}
+    Make one thin wrapper per admin area (a layout that only fixes the icon and the large title) and have each
+    screen use that wrapper, so the screens line up. --}}
 
 <div class="flex h-full w-full flex-1 flex-col gap-4">
     <div class="flex items-center gap-2">
@@ -16,7 +18,7 @@
         </flux:heading>
     </div>
 
-    {{-- 本文。min-w-0 が無いと、中の表が縮まずに外へはみ出す。 --}}
+    {{-- Body. Without min-w-0, a table inside does not shrink and overflows. --}}
     <div class="flex min-w-0 flex-1 flex-col gap-4 self-stretch">
         @if ($heading || $subheading)
             <div class="flex flex-col gap-1">

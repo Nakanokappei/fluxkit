@@ -1,4 +1,4 @@
-# fluxkit の部品を単体で見て直すための、確かめ用の Laravel を動かすイメージ (PHP ＋ Composer ＋ Node)。
+# Image that runs the throwaway Laravel app for viewing and fixing fluxkit components on their own (PHP + Composer + Node).
 FROM php:8.5-cli-trixie
 
 RUN apt-get update \

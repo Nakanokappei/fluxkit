@@ -1,22 +1,23 @@
-# プレイグラウンド
+# Playground
 
-fluxkit の部品を単体で見て直すための、確かめ用の Laravel（Docker）。部品のファイル（`resources/views/components/*`・
-`resources/css/fluxkit.css`・`resources/js/fluxkit.js`）を直すと、そのまま画面に出る。
+A throwaway Laravel app (Docker) for viewing and fixing fluxkit components on their own. Edits to the component files
+(`resources/views/components/*`, `resources/css/fluxkit.css`, `resources/js/fluxkit.js`) show up on screen immediately.
 
 ```bash
 cd playground
-docker compose up --build        # 最初の 1 回は Laravel を作るので数分かかる
+docker compose up --build        # the first run creates the Laravel app and takes a few minutes
 ```
 
-- 部品の一覧: http://localhost:8095/fluxkit-preview （ポートは `FLUXKIT_PLAYGROUND_PORT`、Vite は `FLUXKIT_VITE_PORT`。既定 8095・5173）
-- 止める: `Ctrl+C` か `docker compose down`
-- 作り直す: `playground/app` を消して、もう一度 `docker compose up`
+- Component list: http://localhost:8095/fluxkit-preview (ports: `FLUXKIT_PLAYGROUND_PORT` and `FLUXKIT_VITE_PORT`; defaults 8095 and 5173)
+- Stop: `Ctrl+C` or `docker compose down`
+- Rebuild: delete `playground/app` and run `docker compose up` again
+- Japanese: set `APP_LOCALE=ja` in `playground/app/.env` to check `lang/ja.json`
 
-## しくみ
+## How it works
 
-- `setup.sh` が `playground/app` に Laravel を作り（git には入れない）、Livewire・Flux と、composer の path リポジトリで
-  このリポジトリの直下を symlink で入れる
-- CSS と JS は `stubs/` の写し。Tailwind v4 は fluxkit のビューを直に `@source` で拾い、Vite の開発サーバーで作り直す
-- `FLUXKIT_PREVIEW=true` でプレビューのルートを開く。DB は使わない（セッション・キャッシュはファイル）
-- プレビューは Livewire のコンポーネントの中ではないので、`wire:click` などのボタンは押しても動かない。動きまで
-  確かめたい部品は、`app/` に Livewire のコンポーネントを足して試す（`app/` は捨ててよい）
+- `setup.sh` creates a Laravel app in `playground/app` (not committed) and installs Livewire, Flux and, through a composer
+  path repository, the root of this repository via symlink
+- The CSS and JS are copies from `stubs/`. Tailwind v4 picks up fluxkit's views directly via `@source`, rebuilt by the Vite dev server
+- `FLUXKIT_PREVIEW=true` enables the preview route. No DB is used (sessions and cache are files)
+- The preview is not inside a Livewire component, so buttons such as `wire:click` do nothing. To check behavior,
+  add a Livewire component to `app/` and try it there (`app/` is disposable)

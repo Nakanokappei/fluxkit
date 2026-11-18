@@ -1,9 +1,8 @@
 {{--
-    「まだ何もありません」の破線の箱。データが無いことを大きく見せる。
+    A dashed "nothing here yet" box that emphasizes there is no data.
 
-    **持つのは破線の枠と中央寄せだけ。** 余白と枠の濃さは画面ごとに違う
-    （データが無いことを大きく見せる画面と、小さく添える画面がある）ので、
-    使う側が class で渡す。
+    **It owns only the dashed frame and centering.** Padding and border strength differ per screen
+    (some screens emphasize the absence of data, others just mention it), so the caller passes them as class.
 
         <x-fluxkit::empty-state class="border-neutral-300 bg-white p-12 text-center dark:bg-zinc-900">…</x-fluxkit::empty-state>
 --}}

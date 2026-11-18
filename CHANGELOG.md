@@ -1,19 +1,28 @@
-# 変更の記録
+# Changelog
+
+## v0.2.0 (2026-11-19)
+
+- **Translation keys are now English.** Components call `__('Delete')` instead of `__('削除')`. `lang/en.json` is gone and
+  the Japanese text moved to `lang/ja.json`, so apps with `APP_LOCALE=ja` render the same as before.
+  If your app's `lang/<locale>.json` overrides fluxkit's text, rename those keys to the English ones (see `lang/ja.json`)
+- The 0-results count reads "0 items" and the range reads ":from–:to of :total" in English
+- Licensed under MIT (`LICENSE`)
+- All documentation and code comments are now in English
 
 ## v0.1.2 (2026-11-17)
 
-- `sort-handle` のつまみのアイコン（Lucide の grip-vertical）を fluxkit の中に持った（`x-fluxkit::icon.grip-vertical`）。
-  それまでは使うアプリの `resources/views/flux/icon/grip-vertical.blade.php` に頼っていて、持たないアプリでは 500 になった。
-  描画は変わらない
-- プレイグラウンド（`playground/`）: 部品を単体で見て直すための確かめ用の Laravel（Docker）
+- The `sort-handle` grip icon (Lucide's grip-vertical) now ships inside fluxkit (`x-fluxkit::icon.grip-vertical`).
+  Previously it relied on the app's `resources/views/flux/icon/grip-vertical.blade.php` and returned a 500 in apps without it.
+  Rendering is unchanged
+- Playground (`playground/`): a throwaway Laravel app (Docker) for viewing and fixing components on their own
 
 ## v0.1.1 (2026-11-16)
 
-- 部品の頭のコメントの例から `__('…')` を外した（訳のファイルの鍵を数えるアプリで、例の文が鍵に数えられないように）。
-  描画は変わらない
+- Removed `__('…')` from the examples in component header comments (so apps that collect translation keys do not count
+  example text as keys). Rendering is unchanged
 
 ## v0.1.0 (2026-11-16)
 
-- 最初の版。card・table-head・sortable-th・cell-sub・sub-row・empty-row・table-pager・page-nav・empty-note・
-  empty-state・name-badge・required-badge・delete-button・row-select-button・sort-handle・search-input・
-  dashed-box・pane・admin-page・busy の 20 部品と、プレビュー（`/fluxkit-preview`）
+- First release. 20 components — card, table-head, sortable-th, cell-sub, sub-row, empty-row, table-pager, page-nav,
+  empty-note, empty-state, name-badge, required-badge, delete-button, row-select-button, sort-handle, search-input,
+  dashed-box, pane, admin-page, busy — and the preview (`/fluxkit-preview`)

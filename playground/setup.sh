@@ -1,9 +1,9 @@
 #!/bin/sh
-# プレイグラウンドの Laravel (playground/app。git には入れない) を作る。コンテナの中で走る。
+# Creates the playground's Laravel app (playground/app, not committed). Runs inside the container.
 #
-# - fluxkit は composer の path リポジトリ (/fluxkit。リポジトリの直下) を symlink で読む。部品を直せばすぐ効く
-# - Tailwind v4 は fluxkit のビューを直に @source で拾い、fluxkit.css と fluxkit.js も直に読む (Vite の開発サーバー)
-# 作り直すときは playground/app を消して、もう一度 docker compose up。
+# - fluxkit is loaded from a composer path repository (/fluxkit, the repository root) via symlink, so component edits apply immediately
+# - Tailwind v4 picks up fluxkit's views directly via @source, and fluxkit.css and fluxkit.js are read directly too (Vite dev server)
+# To rebuild, delete playground/app and run docker compose up again.
 set -eu
 cd /fluxkit/playground
 
@@ -13,8 +13,8 @@ cd app
 composer config repositories.fluxkit '{"type": "path", "url": "/fluxkit", "options": {"symlink": true}}'
 composer require --no-interaction livewire/livewire:^4.1 livewire/flux:^2.13 'cc9/fluxkit:*@dev'
 
-# プレビューのルートを開く (config fluxkit.preview.enabled)。画面は日本語 (部品の文の鍵のまま)。セッションなどは DB を使わない。
-sed -i 's/^APP_LOCALE=.*/APP_LOCALE=ja/' .env
+# Enable the preview route (config fluxkit.preview.enabled). Sessions and the like do not use a DB.
+# Set APP_LOCALE=ja in playground/app/.env to check the Japanese translations (lang/ja.json).
 cat >> .env <<'ENV'
 
 FLUXKIT_PREVIEW=true

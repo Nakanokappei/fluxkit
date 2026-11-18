@@ -1,83 +1,85 @@
 ---
 name: fluxkit
-description: Laravel で UI を作る・変更するとき、fluxkit パッケージ（cc9/fluxkit）の部品を使う。<x-fluxkit::…> の Blade 部品（箱・表の見出し・並べ替えの見出し・ページャ・空のときの表示・名前のバッジ・必須のバッジ・削除ボタン・行を開くボタン・ドラッグのつまみ・検索欄・破線の箱・ペイン・管理画面の頭・処理中の印）の props・slot・使用例、インストールと Tailwind v4 の設定、守る決まり。Blade や Livewire の画面を作る・直すとき、表・一覧・設定画面・フォームを足すとき、「部品」「コンポーネント」「共通化」「fluxkit」と言われたときに使う。
+description: Use the fluxkit package (cc9/fluxkit) components when building or changing UI in Laravel. Props, slots and examples of the <x-fluxkit::…> Blade components (box, table header, sortable header, pager, empty states, name badge, required badge, delete button, row-open button, drag grip, search field, dashed box, pane, admin page header, busy indicator), installation and Tailwind v4 setup, and the rules to follow. Use when building or fixing Blade or Livewire screens, when adding tables, lists, settings screens or forms, and when asked about "components", "shared components" or "fluxkit".
 ---
 
-# fluxkit — Flux の上に重ねる Blade の部品
+# fluxkit — Blade components layered on top of Flux
 
-`cc9/fluxkit` は、Livewire 4 ＋ Flux 2 のアプリで繰り返し書いていた組み合わせを、無名の Blade コンポーネントにまとめたもの。
-**ボタン・入力欄・モーダル・テーブルの素の部品は Flux（`<flux:button>` など）を使う。** fluxkit は Flux に無い「画面の形」
-（表の枠・見出し・ページャ、空のときの一文、名前のバッジ、削除ボタンの決まった形など）だけを持つ。
+`cc9/fluxkit` bundles combinations that were written over and over in Livewire 4 + Flux 2 apps into anonymous Blade components.
+**Use Flux (`<flux:button>` and so on) for plain buttons, inputs, modals and tables.** fluxkit only owns the "screen shapes"
+Flux lacks (table frames, headers and pagers, the line shown when a list is empty, name badges, a standard delete button, and so on).
 
-- リポジトリ: https://github.com/Nakanokappei/fluxkit（**ここが正**。使うアプリは composer で版を指して取り込む）
-- 部品のプレビュー: 開発環境（`APP_ENV=local`）で `GET /fluxkit-preview`（全部品を並べる。ボタンは見た目だけ）
+- Repository: https://github.com/Nakanokappei/fluxkit (**the source of truth**; apps pull a version in through composer)
+- Component preview: `GET /fluxkit-preview` in development (`APP_ENV=local`) (lists every component; buttons are for looks only)
 
-## 1. 守る決まり
+## 1. Rules
 
-1. **同等の部品が fluxkit にあるときは、独自に実装しない。** 先に下の一覧（§4）を見る。Flux にある部品は Flux を使う
-2. **足りない部品は、作る前に「プロジェクト内で作るか、fluxkit に足すか」を利用者に確かめる。** 目安: 業務の語・モデル・
-   ルート名に結びつくならプロジェクト内（`resources/views/components/…`）、どのアプリでも同じ形ならパッケージ
-3. **fluxkit を変えたら、この SKILL.md も同じ変更で直す**（部品の一覧・props・例）。あわせてプレビュー
-   （`resources/views/preview.blade.php`）と、文言を足したら `lang/en.json` も。**変更は fluxkit のリポジトリに入れて版の
-   タグを打ち、使うアプリで `composer update cc9/fluxkit`**（アプリの `vendor/` の中を直に直さない）。個人の
-   `~/.claude/skills/fluxkit/SKILL.md` に写しを置いているなら、写し直す
-4. **プロジェクト固有の依存を持ち込まない。** `App\…` のクラス・モデル・ルート名・アプリの設定は、props か
-   `config('fluxkit.…')`（`config/fluxkit.php`）で受け取る
-5. **既定の見た目と props の名前は、使っているアプリ全部に効く。** 変えるなら利用者に確かめ、使う側を同じ変更で直す。
-   足すときは既定値を今の見た目にする（呼び出しを直さずに済むように）
-6. **呼び出し側でクラスを足せるようにする。** 外側の要素に `$attributes->merge(['class' => '…'])` か
-   `$attributes->class([...])`。ほかの属性（`data-test`・`wire:key`・`aria-*`）もそこへ流す
-7. **部品の中の文は、日本語の `__('…')` にリテラルで書く**（鍵は日本語のまま）。訳はパッケージの `lang/en.json`、
-   アプリの `lang/<言語>.json` に同じ鍵があればアプリが勝つ。語を変えたい画面のために、`label` などの props で差し替えられるように
-8. **Alpine の式は CSP 用の Alpine で読める形だけ**（アロー関数・`if`・`;` でつないだ文・`?.`・テンプレート文字列・グローバル・
-   メソッドを持つ `x-data="{…}"` を書かない）。動きは `resources/js/fluxkit.js` の `Alpine.data` に置き、部品からは名前で呼ぶ。
-   `$wire.メソッド()` の呼び出しは属性に残す
-9. **`<form>` にする部品にも `method="POST"` を書く。** インラインの `<script>`・`<style>`・`onclick` は書かない（CSP）
-10. **Tailwind のクラスはビューの中にリテラルで書く**（組み立てた文字列は拾われない）
+1. **Do not reimplement something fluxkit already has.** Check the list below (§4) first. Use Flux for what Flux has
+2. **Before building a missing component, ask the user whether it belongs in the project or in fluxkit.** Rule of thumb:
+   if it is tied to business terms, models or route names, it belongs in the project (`resources/views/components/…`); if
+   it would look the same in any app, it belongs in the package
+3. **When changing fluxkit, update this SKILL.md in the same change** (component list, props, examples). Also update the
+   preview (`resources/views/preview.blade.php`) and, when adding text, `lang/ja.json`. **Commit changes to the fluxkit
+   repository, tag a version, and run `composer update cc9/fluxkit` in the apps** (never edit inside an app's `vendor/`).
+   If you keep a copy at `~/.claude/skills/fluxkit/SKILL.md`, recopy it
+4. **Do not bring in project-specific dependencies.** Receive `App\…` classes, models, route names and app settings via props
+   or `config('fluxkit.…')` (`config/fluxkit.php`)
+5. **Default looks and prop names affect every app using fluxkit.** Ask the user before changing them, and update the callers
+   in the same change. When adding a prop, make its default the current look (so callers need no changes)
+6. **Let callers add classes.** Use `$attributes->merge(['class' => '…'])` or `$attributes->class([...])` on the outer element.
+   Pass other attributes (`data-test`, `wire:key`, `aria-*`) through there too
+7. **Write text inside components as literal English `__('…')`** (the English text is the key). The Japanese translation is the
+   package's `lang/ja.json`; if the app's `lang/<locale>.json` has the same key, the app wins. Make text replaceable through
+   props such as `label` for screens that need different wording
+8. **Only write Alpine expressions the CSP build of Alpine can read** (no arrow functions, `if`, `;`-joined statements, `?.`,
+   template literals, globals, or `x-data="{…}"` with methods). Put behavior in `Alpine.data` in `resources/js/fluxkit.js` and
+   call it by name from the component. Keep `$wire.method()` calls in the attributes
+9. **Write `method="POST"` on components that render a `<form>`.** No inline `<script>`, `<style>` or `onclick` (CSP)
+10. **Write Tailwind classes literally in the views** (assembled strings are not picked up)
 
-## 2. インストール
+## 2. Installation
 
-前提: PHP 8.4 以上・Laravel 13・Livewire 4・Flux 2・Tailwind v4（Vite）。
+Requirements: PHP 8.4+, Laravel 13, Livewire 4, Flux 2, Tailwind v4 (Vite).
 
-Packagist には載せていない。アプリの `composer.json` に GitHub のリポジトリを足す（公開なので認証は要らない）:
+Not published on Packagist. Add the GitHub repository to the app's `composer.json` (public, so no authentication needed):
 
 ```json
 "repositories": [
     { "type": "vcs", "url": "https://github.com/Nakanokappei/fluxkit" }
 ],
-"require": { "cc9/fluxkit": "^0.1" }
+"require": { "cc9/fluxkit": "^0.2" }
 ```
 
 ```bash
 composer update cc9/fluxkit
 ```
 
-- **版は git のタグ**（`v0.1.0` など）。composer.json に `version` は書かない。使う側は `composer.lock` で版が固まる
-- **部品を直しながらアプリで試すとき**は、手元の clone を path リポジトリで一時的に指す（`vcs` の前に置く。
-  コミットしない）:
-  `{"type": "path", "url": "../fluxkit", "options": {"symlink": true}}` と `"cc9/fluxkit": "dev-main as 0.1.x-dev"`
-- GitHub の API を認証なしで叩くと 1 時間に 60 回までで、CI や Docker のビルドが続くと当たることがある。
-  CI では `COMPOSER_AUTH` に `{"github-oauth": {"github.com": "${{ github.token }}"}}` を渡す
+- **Versions are git tags** (`v0.2.0`, etc.). Do not write `version` in composer.json. Callers pin the version via `composer.lock`
+- **To try component changes in an app while editing them**, temporarily point to a local clone with a path repository
+  (place it before `vcs`; do not commit it):
+  `{"type": "path", "url": "../fluxkit", "options": {"symlink": true}}` and `"cc9/fluxkit": "dev-main as 0.2.x-dev"`
+- Unauthenticated GitHub API calls are limited to 60 per hour, which back-to-back CI or Docker builds can hit.
+  In CI, pass `{"github-oauth": {"github.com": "${{ github.token }}"}}` in `COMPOSER_AUTH`
 
-ServiceProvider（`Cc9\Fluxkit\FluxkitServiceProvider`）は自動で読み込まれる（package discovery）。
+The ServiceProvider (`Cc9\Fluxkit\FluxkitServiceProvider`) is loaded automatically (package discovery).
 
-## 3. Tailwind・JS・設定
+## 3. Tailwind, JS and configuration
 
-**CSS**（`resources/css/app.css`。Tailwind v4）:
+**CSS** (`resources/css/app.css`, Tailwind v4):
 
 ```css
 @import 'tailwindcss';
 @import '../../vendor/livewire/flux/dist/flux.css';
-@import '../../vendor/cc9/fluxkit/resources/css/fluxkit.css';   /* busy の見え方 */
+@import '../../vendor/cc9/fluxkit/resources/css/fluxkit.css';   /* look of busy */
 
 @source '../views';
-@source '../../vendor/cc9/fluxkit/resources/views';           /* 部品のクラスを拾う */
+@source '../../vendor/cc9/fluxkit/resources/views';           /* pick up the components' classes */
 @source '../../vendor/livewire/flux/stubs/**/*.blade.php';
 ```
 
-Tailwind v3 なら `tailwind.config.js` の `content` に `'./vendor/cc9/fluxkit/resources/views/**/*.blade.php'` を足す。
+On Tailwind v3, add `'./vendor/cc9/fluxkit/resources/views/**/*.blade.php'` to `content` in `tailwind.config.js`.
 
-**JS**（`resources/js/app.js`。Alpine が始まる前に 1 回）:
+**JS** (`resources/js/app.js`, once before Alpine starts):
 
 ```js
 import { registerFluxkitComponents } from '../../vendor/cc9/fluxkit/resources/js/fluxkit.js';
@@ -85,79 +87,83 @@ import { registerFluxkitComponents } from '../../vendor/cc9/fluxkit/resources/js
 document.addEventListener('alpine:init', () => registerFluxkitComponents(window.Alpine));
 ```
 
-呼ばないと `x-fluxkit::page-nav`（と、それを使う `table-pager`）の番号の欄が動かない。
+Without it, the page number field of `x-fluxkit::page-nav` (and of `table-pager`, which uses it) does not work.
 
-**設定**（`config/fluxkit.php`。書いた鍵だけが既定を上書きする。`php artisan vendor:publish --tag=fluxkit-config` で雛形）:
+**Configuration** (`config/fluxkit.php`; only the keys you write override the defaults; scaffold with `php artisan vendor:publish --tag=fluxkit-config`):
 
-| 鍵 | 既定 | 意味 |
+| Key | Default | Meaning |
 |---|---|---|
-| `page_sizes` | `[10, 25, 50, 100]` | `table-pager` の「1 ページの行数」。行数を受け取る Livewire の検証と同じ一覧にする |
-| `preview.enabled` | `APP_ENV === 'local'`（`FLUXKIT_PREVIEW` で上書き） | プレビューのルートを登録するか。本番では付けない |
-| `preview.path` | `fluxkit-preview` | プレビューの URL。URL の 1 番目をテナントなどに使うアプリは予約語に足す |
+| `page_sizes` | `[10, 25, 50, 100]` | "Rows per page" of `table-pager`. Keep it the same list as the validation on the Livewire side |
+| `preview.enabled` | `APP_ENV === 'local'` (override with `FLUXKIT_PREVIEW`) | Whether to register the preview route. Never enable in production |
+| `preview.path` | `fluxkit-preview` | Preview URL. Apps that use the first URL segment for tenants etc. should add it to their reserved words |
 | `preview.middleware` | `['web']` | |
-| `preview.vite` | `['resources/css/app.css', 'resources/js/app.js']` | プレビューの `<head>` で読む Vite の入口 |
+| `preview.vite` | `['resources/css/app.css', 'resources/js/app.js']` | Vite entry points loaded in the preview's `<head>` |
 
-## 4. 部品の一覧
+**Translations**: UI text is English. A Japanese translation ships in `lang/ja.json` and applies when the app locale is `ja`.
+For other locales, add the keys from `lang/ja.json` to the app's `lang/<locale>.json`.
 
-| 部品 | 何に使う |
+## 4. Component list
+
+| Component | Use |
 |---|---|
-| `card` | 画面の中の箱（角丸・枠線・背景だけ） |
-| `table-head` | 表の見出し行（`<thead>`） |
-| `sortable-th` | 列見出しで並べ替えるセル |
-| `cell-sub` | セルの中で名前の下に積む補足の 1 行 |
-| `sub-row` | 1 件を 2 段で見せる表の 2 段目の行 |
-| `empty-row` | 表に行が無いときの 1 行 |
-| `table-pager` | 表の下のページャ（行数の選択・件数・ページの移動） |
-| `page-nav` | ページの移動だけ（先頭・前・番号・次・最後） |
-| `empty-note` | 一覧が空のときの小さな一文 |
-| `empty-state` | 「まだ何もありません」の破線の大きな箱 |
-| `name-badge` | 利用者が付けた名前のバッジ（幅で切って title） |
-| `required-badge` | 素の `<label>` の「必須」のバッジ |
-| `delete-button` | 一覧の行の「削除」ボタン（確かめの文つき） |
-| `row-select-button` | 行を押して詳細を開く表の、キーボードの入口 |
-| `sort-handle` | ドラッグで並べ替える行のつまみ |
-| `search-input` | 一覧の打って絞る検索欄 |
-| `dashed-box` | 追加のフォーム・一括操作を囲む破線の箱 |
-| `pane` | 題名の帯の付いた枠（ペイン） |
-| `admin-page` | 管理画面の頭（アイコンと大きな見出し）と本文 |
-| `busy` | サーバーの処理を待っているあいだの印 |
+| `card` | A box on a screen (only rounded corners, border, background) |
+| `table-head` | Table header row (`<thead>`) |
+| `sortable-th` | Header cell sorted by clicking the column header |
+| `cell-sub` | A supplementary line stacked under a name inside a cell |
+| `sub-row` | Second row of a table that shows one item in two rows |
+| `empty-row` | The row shown when a table has no rows |
+| `table-pager` | Pager under a table (rows-per-page select, item count, page navigation) |
+| `page-nav` | Page navigation only (first, previous, number, next, last) |
+| `empty-note` | A short line shown when a list is empty |
+| `empty-state` | A large dashed "nothing here yet" box |
+| `name-badge` | Badge for a user-given name (truncated by width, full name in title) |
+| `required-badge` | "Required" badge for a plain `<label>` |
+| `delete-button` | "Delete" button on a list row (with confirmation message) |
+| `row-select-button` | Keyboard entry point for tables where clicking a row opens details |
+| `sort-handle` | Grip for rows reordered by dragging |
+| `search-input` | Type-to-filter search field for lists |
+| `dashed-box` | Dashed box around an "add" form or bulk actions |
+| `pane` | Frame with a title bar (pane) |
+| `admin-page` | Admin screen header (icon and large title) and body |
+| `busy` | Indicator shown while waiting for the server |
 
-## 5. 部品ごとの props・slot・例
+## 5. Props, slots and examples per component
 
-どの部品も、props 以外の属性（`class`・`data-test`・`wire:key`・`aria-*` など）は外側の要素（下で「属性の行き先」）に付く。
+For every component, attributes other than props (`class`, `data-test`, `wire:key`, `aria-*`, etc.) go on the outer element
+(listed below as "attributes go to").
 
 ### card
 
-- props: なし ／ slot: 中身 ／ 属性の行き先: `<div>`
-- 持つのは枠だけ。余白と並べ方は class で渡す
+- props: none / slot: contents / attributes go to: `<div>`
+- Owns only the frame. Pass padding and layout as class
 
 ```blade
 <x-fluxkit::card class="flex flex-col gap-3 p-4">…</x-fluxkit::card>
 ```
 
-### table-head・sortable-th・cell-sub・sub-row・empty-row（表の形）
+### table-head, sortable-th, cell-sub, sub-row, empty-row (table shape)
 
-表は「枠は `card class="overflow-x-auto"`、見出しは `table-head`、セルは `px-3 py-2`、行は
-`border-t border-neutral-100`、行が無いときは `empty-row`、すぐ下に `table-pager`」で揃える。
+Standardize tables as: frame is `card class="overflow-x-auto"`, header is `table-head`, cells are `px-3 py-2`, rows are
+`border-t border-neutral-100`, `empty-row` when there are no rows, and `table-pager` right below.
 
-| 部品 | props | slot | 属性の行き先 |
+| Component | props | slot | Attributes go to |
 |---|---|---|---|
-| `table-head` | なし | `<tr>…</tr>` | `<thead>` |
-| `sortable-th` | `column`（列の名前）・`sort`（いま並べ替えている列）・`direction`（`asc`/`desc`） | 見出しの文 | `<th>` |
-| `cell-sub` | なし | 補足の文 | `<div>` |
-| `sub-row` | `cols`（colspan）・`align`（`start` 既定 / `end`） | 2 段目の中身 | `<tr>` |
-| `empty-row` | `cols`（colspan） | 空のときの文 | なし |
+| `table-head` | none | `<tr>…</tr>` | `<thead>` |
+| `sortable-th` | `column` (column name), `sort` (column currently sorted by), `direction` (`asc`/`desc`) | header text | `<th>` |
+| `cell-sub` | none | note text | `<div>` |
+| `sub-row` | `cols` (colspan), `align` (`start` default / `end`) | second-row contents | `<tr>` |
+| `empty-row` | `cols` (colspan) | text shown when empty | none |
 
-- `sortable-th` は押すと Livewire の `sort('<column>')` を呼ぶ（同じ列をもう一度で逆順）。`aria-sort` も付ける
-- テキストの列に `whitespace-nowrap` を付けない。足りないときは列を増やさず `cell-sub` か `sub-row` に積む
+- Clicking `sortable-th` calls Livewire's `sort('<column>')` (clicking the same column again reverses). It also sets `aria-sort`
+- Do not put `whitespace-nowrap` on text columns. When space runs short, stack into `cell-sub` or `sub-row` instead of adding columns
 
 ```blade
 <x-fluxkit::card class="overflow-x-auto">
     <table class="w-full text-sm">
         <x-fluxkit::table-head>
             <tr>
-                <x-fluxkit::sortable-th column="name" :sort="$sort" :direction="$direction">{{ __('氏名') }}</x-fluxkit::sortable-th>
-                <th class="px-3 py-2 text-end font-medium">{{ __('件数') }}</th>
+                <x-fluxkit::sortable-th column="name" :sort="$sort" :direction="$direction">{{ __('Name') }}</x-fluxkit::sortable-th>
+                <th class="px-3 py-2 text-end font-medium">{{ __('Count') }}</th>
             </tr>
         </x-fluxkit::table-head>
         <tbody>
@@ -169,9 +175,9 @@ document.addEventListener('alpine:init', () => registerFluxkitComponents(window.
                     </td>
                     <td class="px-3 py-2 text-end tabular-nums">{{ $user->count }}</td>
                 </tr>
-                <x-fluxkit::sub-row :cols="2" align="end" wire:key="user-actions-{{ $user->id }}">…ボタン…</x-fluxkit::sub-row>
+                <x-fluxkit::sub-row :cols="2" align="end" wire:key="user-actions-{{ $user->id }}">…buttons…</x-fluxkit::sub-row>
             @empty
-                <x-fluxkit::empty-row :cols="2">{{ __('ユーザーはいません。') }}</x-fluxkit::empty-row>
+                <x-fluxkit::empty-row :cols="2">{{ __('No users.') }}</x-fluxkit::empty-row>
             @endforelse
         </tbody>
     </table>
@@ -179,66 +185,66 @@ document.addEventListener('alpine:init', () => registerFluxkitComponents(window.
 </x-fluxkit::card>
 ```
 
-### table-pager・page-nav（ページ送り）
+### table-pager, page-nav (pagination)
 
-| 部品 | props |
+| Component | props |
 |---|---|
-| `table-pager` | `paginator`（`LengthAwarePaginator`）・`per-page`（1 ページの行数を持つ Livewire のプロパティ名）・`options`（行数の選択肢。既定は `config('fluxkit.page_sizes')`） |
-| `page-nav` | `paginator`（`LengthAwarePaginator`。総ページ数が要るので `simplePaginate` は不可） |
+| `table-pager` | `paginator` (`LengthAwarePaginator`), `per-page` (name of the Livewire property holding rows per page), `options` (rows-per-page choices; defaults to `config('fluxkit.page_sizes')`) |
+| `page-nav` | `paginator` (`LengthAwarePaginator`; the total page count is needed, so `simplePaginate` is not allowed) |
 
-- Livewire の `WithPagination` の `gotoPage` / `previousPage` / `nextPage` を直接呼ぶ
-- **1 画面に 2 つ置くなら、`paginate(…, pageName: 'usersPage')` でページ番号の名前を分ける**（分けないと両方が動く）
-- 番号を打って飛んだら `page-jumped` を dispatch する（上へ戻すなどに使う）。番号の欄には fluxkit.js が要る（§3）
-- `table-pager` は件数に関わらず出す（行数をいつでも変えられるように）。区切りの線も持つ。属性は受け取らない
+- Calls `gotoPage` / `previousPage` / `nextPage` of Livewire's `WithPagination` directly
+- **With two on one screen, separate the page names with `paginate(…, pageName: 'usersPage')`** (otherwise both move)
+- Jumping by typed number dispatches `page-jumped` (e.g. to scroll back to the top). The number field needs fluxkit.js (§3)
+- `table-pager` is shown regardless of item count (so rows per page can always be changed). It owns the divider line. It takes no attributes
 
 ```blade
 <x-fluxkit::table-pager :paginator="$users" per-page="usersPerPage" />
 <x-fluxkit::page-nav :paginator="$messages" />
 ```
 
-### empty-note・empty-state
+### empty-note, empty-state
 
-| 部品 | props | 属性の行き先 |
+| Component | props | Attributes go to |
 |---|---|---|
-| `empty-note` | `bare`（true なら枠を付けない。表の枠の中で表の代わりに出すとき） | 外側の `<div>` |
-| `empty-state` | なし（破線の枠と中央寄せだけ。余白・枠の濃さは class で） | `<div>` |
+| `empty-note` | `bare` (true omits the frame; for use inside a table's frame in place of the table) | outer `<div>` |
+| `empty-state` | none (only the dashed frame and centering; padding and border strength via class) | `<div>` |
 
 ```blade
-<x-fluxkit::empty-note>{{ __('項目はまだありません。') }}</x-fluxkit::empty-note>
+<x-fluxkit::empty-note>{{ __('No items yet.') }}</x-fluxkit::empty-note>
 <x-fluxkit::empty-state class="border-neutral-300 bg-white p-12 text-center">…</x-fluxkit::empty-state>
 ```
 
-### name-badge・required-badge
+### name-badge, required-badge
 
-| 部品 | props |
+| Component | props |
 |---|---|
-| `name-badge` | `name`（載せる名前）・`title`（既定は name）・`max`（幅の上限のクラス。既定 `max-w-48`）・`color`・`variant`・`icon`（`flux:badge` へ） |
-| `required-badge` | なし |
+| `name-badge` | `name` (name to show), `title` (defaults to name), `max` (max-width class; default `max-w-48`), `color`, `variant`, `icon` (to `flux:badge`) |
+| `required-badge` | none |
 
-- `name-badge` は利用者が付けた名前（部署・ラベルなど）用。役割・状態のように語が決まって短いものは `flux:badge` のまま
-- `required-badge` は素の `<label>` の中だけ。`flux:label` / `label=` を渡す欄は `:badge="__('必須')"` を使う。
-  バッジは aria-hidden なので、**欄そのものに `aria-required="true"`**（部品には `:aria-required="'true'"`）
+- `name-badge` is for user-given names (departments, labels, …). Keep `flux:badge` for short fixed wording such as roles or states
+- `required-badge` only inside a plain `<label>`. Fields given `flux:label` / `label=` use `:badge="__('Required')"`.
+  The badge is aria-hidden, so put **`aria-required="true"` on the field itself** (on components, `:aria-required="'true'"`)
 
 ```blade
 <x-fluxkit::name-badge :name="$team->name" color="blue" class="shrink-0" />
-<label for="code">{{ __('コード') }} <x-fluxkit::required-badge /></label>
+<label for="code">{{ __('Code') }} <x-fluxkit::required-badge /></label>
 <select id="code" aria-required="true">…</select>
 ```
 
-### delete-button・row-select-button・sort-handle（行の操作）
+### delete-button, row-select-button, sort-handle (row actions)
 
-| 部品 | props | 属性の行き先 |
+| Component | props | Attributes go to |
 |---|---|---|
-| `delete-button` | `action`（`wire:click`）・`confirm`（`wire:confirm` の文。null なら確かめない）・`size`（`xs` 既定 / `sm`）・`label`（既定「削除」）・`danger`（true で赤枠） | `flux:button` |
-| `row-select-button` | `action`（`wire:click.stop`）・`selected`（`aria-pressed`） | `<button>` |
-| `sort-handle` | `name`（読み上げの「:name をドラッグして並べ替え」）・`wide`（true 既定で `w-10`、false で `w-8`） | `<div wire:sort:handle>`（`data-test` の既定は `drag-handle`） |
+| `delete-button` | `action` (`wire:click`), `confirm` (`wire:confirm` text; null skips confirmation), `size` (`xs` default / `sm`), `label` (default "Delete"), `danger` (true for a red outline) | `flux:button` |
+| `row-select-button` | `action` (`wire:click.stop`), `selected` (`aria-pressed`) | `<button>` |
+| `sort-handle` | `name` (inserted into the accessible label "Drag :name to reorder"), `wide` (true default for `w-10`, false for `w-8`) | `<div wire:sort:handle>` (`data-test` defaults to `drag-handle`) |
 
-- 一覧の行の中の削除は ghost ＋確かめ（既定）。ファイルごと消えるもの・常に見える中止は `:danger="true"`
-- `row-select-button` を使っても `<tr wire:click>` は残す（マウスで行のどこを押しても開く）。押せない行は `disabled`
-- `sort-handle` の行（`wire:sort:item`）と並べ替えの呼び出し（`wire:sort`）は呼ぶ側に書く
+- Deletes inside list rows use ghost + confirmation (the default). Use `:danger="true"` for deletes that remove whole files or always-visible cancels
+- Keep `<tr wire:click>` even with `row-select-button` (so clicking anywhere on the row opens it). Pass `disabled` for rows that cannot be opened
+- The `sort-handle` row (`wire:sort:item`) and the reorder call (`wire:sort`) are written by the caller
 
 ```blade
-<x-fluxkit::delete-button action="delete({{ $item->id }})" :confirm="__('この項目を削除します。元に戻せません。よろしいですか？')" />
+<x-fluxkit::delete-button action="delete({{ $item->id }})" :confirm="__('Delete this item? This cannot be undone.')" />
 <tr wire:click="select({{ $rule->id }})">
     <td class="px-3 py-2"><x-fluxkit::row-select-button action="select({{ $rule->id }})" :selected="$isSelected">{{ $rule->name }}</x-fluxkit::row-select-button></td>
 </tr>
@@ -247,18 +253,18 @@ document.addEventListener('alpine:init', () => registerFluxkitComponents(window.
 
 ### search-input
 
-- props: `model`（`wire:model.live.debounce` で受けるプロパティ）・`label`（aria-label）・`debounce`（ミリ秒。既定 400）
-- 属性の行き先: `flux:input`（`placeholder`・`size`・`class`・`data-test`）。type=search・虫めがね・欄の × で消す
-- 「押して探す」形の欄には使わない
+- props: `model` (property receiving `wire:model.live.debounce`), `label` (aria-label), `debounce` (milliseconds; default 400)
+- Attributes go to: `flux:input` (`placeholder`, `size`, `class`, `data-test`). type=search, magnifying glass, clear with the × in the field
+- Do not use it for fields that search only when a button is pressed
 
 ```blade
-<x-fluxkit::search-input model="search" :label="__('ユーザーを検索')" :placeholder="__('氏名・メールアドレスで検索')" class="w-72" />
+<x-fluxkit::search-input model="search" :label="__('Search users')" :placeholder="__('Search by name or email')" class="w-72" />
 ```
 
 ### dashed-box
 
-- props: `as`（`div` 既定・`form`・`section`） ／ 属性の行き先: 箱の要素
-- **form にするときも `method="POST"` を書く**
+- props: `as` (`div` default, `form`, `section`) / attributes go to: the box element
+- **Write `method="POST"` when it is a form too**
 
 ```blade
 <x-fluxkit::dashed-box as="form" method="POST" wire:submit="addLabel" class="flex flex-wrap items-end gap-2">…</x-fluxkit::dashed-box>
@@ -266,12 +272,12 @@ document.addEventListener('alpine:init', () => registerFluxkitComponents(window.
 
 ### pane
 
-- props: `name`（`data-pane` の値）／ slot: `header`（帯の中身。左に題名、右にボタン）と中身 ／ 属性の行き先: `<section>`
+- props: `name` (value of `data-pane`) / slots: `header` (bar contents; title on the left, buttons on the right) and contents / attributes go to: `<section>`
 
 ```blade
 <x-fluxkit::pane name="chat" class="flex flex-col">
     <x-slot:header>
-        <flux:text class="text-xs font-medium text-zinc-500">{{ __('チャット') }}</flux:text>
+        <flux:text class="text-xs font-medium text-zinc-500">{{ __('Chat') }}</flux:text>
     </x-slot:header>
     …
 </x-fluxkit::pane>
@@ -279,18 +285,18 @@ document.addEventListener('alpine:init', () => registerFluxkitComponents(window.
 
 ### admin-page
 
-- props: `icon`（Flux のアイコン名）・`title`（大きな見出し）・`heading`・`subheading`（画面の見出しと説明。空なら出さない）
-- slot: 本文 ／ 属性は受け取らない。ふつうは管理の種類ごとの薄いレイアウトから呼ぶ
+- props: `icon` (Flux icon name), `title` (large title), `heading`, `subheading` (screen heading and description; omitted when empty)
+- slot: body / takes no attributes. Usually called from a thin layout per admin area
 
 ```blade
-<x-fluxkit::admin-page icon="cog-6-tooth" :title="__('システム設定')" :heading="$heading" :subheading="$subheading">{{ $slot }}</x-fluxkit::admin-page>
+<x-fluxkit::admin-page icon="cog-6-tooth" :title="__('System settings')" :heading="$heading" :subheading="$subheading">{{ $slot }}</x-fluxkit::admin-page>
 ```
 
 ### busy
 
-- props・slot・属性なし。**Livewire のコンポーネントの中に置く**（`wire:loading` は置いたコンポーネントの要求にだけ反応する）
-- 要求が 200ms を超えたら、画面のいちばん上に流れる帯と「読み込んでいます…」を出し、カーソルを待ちの形にする。
-  見え方は `fluxkit.css`（§3 の @import が要る）
+- No props, slots or attributes. **Place it inside a Livewire component** (`wire:loading` reacts only to requests of the component it is in)
+- When a request takes longer than 200ms, shows a sliding bar at the very top of the screen and "Loading…", and turns the cursor into the wait cursor.
+  The look comes from `fluxkit.css` (needs the @import in §3)
 
 ```blade
 <div>
@@ -299,16 +305,16 @@ document.addEventListener('alpine:init', () => registerFluxkitComponents(window.
 </div>
 ```
 
-## 6. 部品を足す・直すとき
+## 6. Adding or changing a component
 
-1. 決まり §1 の 2（どこに作るか）を利用者に確かめる
-2. `resources/views/components/<名前>.blade.php` に書く。頭の `{{-- --}}` に、何の部品か・例・props を書く
-3. `$attributes->merge()` / `->class()` で呼び出し側のクラスと属性を受ける。文言は `__('…')`、既定値は props で差し替えられるように
-   **アイコンは Flux の標準（Heroicons）だけを `flux:icon` で使う。** 標準に無いもの（Lucide など）は `resources/views/components/icon/<名前>.blade.php`
-   に置き、`<x-fluxkit::icon.<名前>>` で呼ぶ（アプリの `resources/views/flux/icon/` に頼ると、ほかのアプリで描けない。v0.1.2）
-4. 動きが要るなら `resources/js/fluxkit.js` の `registerFluxkitComponents` に `Alpine.data` を足す。CSS が要るなら `resources/css/fluxkit.css`
-5. プレビュー（`resources/views/preview.blade.php`）・この SKILL.md（§4・§5）・`lang/en.json` を直す
-6. 使うアプリで（§2 の path で指して）、画面の HTML が変わっていないか（直したとき）・テストが通るかを確かめる
-7. fluxkit のリポジトリにコミットして、版のタグを打つ（既定の見た目や props を変えたら minor、足しただけなら patch。
-   1.0 までは `0.x` の x を上げると使う側の `^0.x` から外れる）。`CHANGELOG.md` に 1 行足す
-8. 使うアプリで `composer update cc9/fluxkit` して、`composer.lock` の変更をコミットする
+1. Ask the user about rule §1.2 (where to build it)
+2. Write it in `resources/views/components/<name>.blade.php`. In the header `{{-- --}}`, describe what it is, an example and its props
+3. Accept the caller's classes and attributes via `$attributes->merge()` / `->class()`. Text is `__('…')` in English; make defaults replaceable via props.
+   **Use only Flux's standard icons (Heroicons) via `flux:icon`.** Put anything else (Lucide, etc.) in `resources/views/components/icon/<name>.blade.php`
+   and call it as `<x-fluxkit::icon.<name>>` (relying on the app's `resources/views/flux/icon/` breaks in other apps; v0.1.2)
+4. If behavior is needed, add `Alpine.data` to `registerFluxkitComponents` in `resources/js/fluxkit.js`. If CSS is needed, `resources/css/fluxkit.css`
+5. Update the preview (`resources/views/preview.blade.php`), this SKILL.md (§4, §5) and `lang/ja.json`
+6. In an app (pointed via the path repository from §2), check that the screen's HTML is unchanged (for fixes) and that tests pass
+7. Commit to the fluxkit repository and tag a version (minor if default looks or props changed, patch if only added.
+   Until 1.0, bumping x in `0.x` falls outside callers' `^0.x`). Add a line to `CHANGELOG.md`
+8. Run `composer update cc9/fluxkit` in the apps and commit the `composer.lock` change

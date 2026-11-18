@@ -1,20 +1,20 @@
 <?php
 
 /*
- * fluxkit の設定。アプリの config/fluxkit.php に書いた鍵が、ここの同じ鍵 (いちばん上の段) を上書きする。
+ * fluxkit configuration. Keys written in the app's config/fluxkit.php override the same top-level keys here.
  */
 
 return [
 
-    // x-fluxkit::table-pager の「1 ページの行数」の選択肢。行数を受け取る側 (Livewire) の検証と同じ一覧を渡す。
+    // Choices for "Rows per page" in x-fluxkit::table-pager. Keep it the same list as the validation on the receiving (Livewire) side.
     'page_sizes' => [10, 25, 50, 100],
 
-    // 全部品を並べたプレビュー (GET /{path})。開発環境 (APP_ENV=local) でだけ開く。
+    // Preview listing every component (GET /{path}). Enabled only in development (APP_ENV=local).
     'preview' => [
         'enabled' => (bool) env('FLUXKIT_PREVIEW', env('APP_ENV') === 'local'),
         'path' => 'fluxkit-preview',
         'middleware' => ['web'],
-        // プレビューの <head> で読む Vite の入口。Tailwind の CSS と、fluxkit の JS を登録する JS。
+        // Vite entry points loaded in the preview's <head>: the Tailwind CSS and the JS that registers fluxkit's JS.
         'vite' => ['resources/css/app.css', 'resources/js/app.js'],
     ],
 

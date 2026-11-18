@@ -1,17 +1,17 @@
 {{--
-    詳細画面などに並べるペイン。枠と、題名の帯 (左に題名、右にボタン) を持つ。
+    A pane laid out on detail screens and the like. Owns the frame and a title bar (title on the left, buttons on the right).
 
         <x-fluxkit::pane name="chat">
             <x-slot:header>
-                <flux:text class="text-xs font-medium text-zinc-500">{{ __('チャット') }}</flux:text>
+                <flux:text class="text-xs font-medium text-zinc-500">{{ $paneTitle }}</flux:text>
             </x-slot:header>
             …
         </x-fluxkit::pane>
 
-      name    data-pane の値 (テストや、ペインの並べ替えの目印)
-      header  帯の中身。左に題名、右にボタン (両端に寄せる)
+      name    Value of data-pane (a marker for tests and for reordering panes)
+      header  Contents of the bar. Title on the left, buttons on the right (pushed to both ends)
 
-    渡した class は枠のうしろに足される (縦に並べるペインは flex flex-col)。
+    The passed class is appended after the frame classes (vertically stacked panes use flex flex-col).
 --}}
 @props(['name', 'header'])
 
