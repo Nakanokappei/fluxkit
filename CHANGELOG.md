@@ -2,8 +2,9 @@
 
 ## Unreleased
 
-- The preview (`/fluxkit-preview`) is now a sample user management screen that uses all 20 components the way an app
-  would, instead of a list of components
+- The preview (`/fluxkit-preview`) is now a set of sample screens in tabs — users, inbox, labels, logs, first run —
+  that use all 20 components the way an app would, instead of a list of components (`?pattern=…`; patterns in
+  `resources/views/preview/`)
 - `search-input`: width classes passed as `class` (e.g. `w-72`) now take effect. Previously `class` went to flux:input's
   wrapper, whose own `w-full` won, so the field was always full width. `class` now goes to a wrapping `<div>`; without a
   width class the field stays full width. Screens that passed a width will now render at that width

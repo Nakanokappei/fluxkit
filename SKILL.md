@@ -10,7 +10,7 @@ description: Use the fluxkit package (cc9/fluxkit) components when building or c
 Flux lacks (table frames, headers and pagers, the line shown when a list is empty, name badges, a standard delete button, and so on).
 
 - Repository: https://github.com/Nakanokappei/fluxkit (**the source of truth**; apps pull a version in through composer)
-- Component preview: `GET /fluxkit-preview` in development (`APP_ENV=local`) (a sample user management screen that uses every component; buttons do nothing)
+- Component preview: `GET /fluxkit-preview` in development (`APP_ENV=local`) (sample screens in tabs — users, inbox, labels, logs, first run — that use every component; buttons do nothing)
 
 ## 1. Rules
 
@@ -19,7 +19,7 @@ Flux lacks (table frames, headers and pagers, the line shown when a list is empt
    if it is tied to business terms, models or route names, it belongs in the project (`resources/views/components/…`); if
    it would look the same in any app, it belongs in the package
 3. **When changing fluxkit, update this SKILL.md in the same change** (component list, props, examples). Also update the
-   preview (`resources/views/preview.blade.php`) and, when adding text, `lang/ja.json`. **Commit changes to the fluxkit
+   preview (`resources/views/preview.blade.php` and its patterns in `resources/views/preview/`) and, when adding text, `lang/ja.json`. **Commit changes to the fluxkit
    repository, tag a version, and run `composer update cc9/fluxkit` in the apps** (never edit inside an app's `vendor/`).
    If you keep a copy at `~/.claude/skills/fluxkit/SKILL.md`, recopy it
 4. **Do not bring in project-specific dependencies.** Receive `App\…` classes, models, route names and app settings via props
@@ -314,7 +314,7 @@ Standardize tables as: frame is `card class="overflow-x-auto"`, header is `table
    **Use only Flux's standard icons (Heroicons) via `flux:icon`.** Put anything else (Lucide, etc.) in `resources/views/components/icon/<name>.blade.php`
    and call it as `<x-fluxkit::icon.<name>>` (relying on the app's `resources/views/flux/icon/` breaks in other apps; v0.1.2)
 4. If behavior is needed, add `Alpine.data` to `registerFluxkitComponents` in `resources/js/fluxkit.js`. If CSS is needed, `resources/css/fluxkit.css`
-5. Update the preview (`resources/views/preview.blade.php`), this SKILL.md (§4, §5) and `lang/ja.json`
+5. Update the preview (a pattern in `resources/views/preview/`), this SKILL.md (§4, §5) and `lang/ja.json`
 6. In an app (pointed via the path repository from §2), check that the screen's HTML is unchanged (for fixes) and that tests pass
 7. Commit to the fluxkit repository and tag a version (minor if default looks or props changed, patch if only added.
    Until 1.0, bumping x in `0.x` falls outside callers' `^0.x`). Add a line to `CHANGELOG.md`

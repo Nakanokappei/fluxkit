@@ -35,7 +35,7 @@ cd playground && docker compose up --build    # http://localhost:8095/fluxkit-pr
 - `setup.sh` creates a Laravel app in `playground/app` (not committed) and symlinks this repository via a composer path repository.
   To rebuild, delete `playground/app` and start again. Set `APP_LOCALE=ja` in `playground/app/.env` to check `lang/ja.json`
 - The preview is outside any Livewire component, so `wire:click` does nothing. To check behavior, add a Livewire component to `playground/app`
-- Component edits show up immediately (`playground/README.md`). When adding a component, add it to `resources/views/preview.blade.php` too
+- Component edits show up immediately (`playground/README.md`). When adding a component, add it to a preview pattern in `resources/views/preview/` too
 - **Default looks and prop names affect every app using fluxkit.** Ask the user before changing them
 
 ## Releasing
