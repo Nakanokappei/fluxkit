@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## v0.2.1 (2026-11-19)
 
 - The preview (`/fluxkit-preview`) is now a set of sample screens in tabs — users, inbox, labels, logs, first run —
   that use all 20 components the way an app would, instead of a list of components (`?pattern=…`; patterns in
