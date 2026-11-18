@@ -10,7 +10,7 @@ description: Use the fluxkit package (cc9/fluxkit) components when building or c
 Flux lacks (table frames, headers and pagers, the line shown when a list is empty, name badges, a standard delete button, and so on).
 
 - Repository: https://github.com/Nakanokappei/fluxkit (**the source of truth**; apps pull a version in through composer)
-- Component preview: `GET /fluxkit-preview` in development (`APP_ENV=local`) (lists every component; buttons are for looks only)
+- Component preview: `GET /fluxkit-preview` in development (`APP_ENV=local`) (a sample user management screen that uses every component; buttons do nothing)
 
 ## 1. Rules
 

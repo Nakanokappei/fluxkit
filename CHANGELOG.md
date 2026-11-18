@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+- The preview (`/fluxkit-preview`) is now a sample user management screen that uses all 20 components the way an app
+  would, instead of a list of components. Components are unchanged
+
 ## v0.2.0 (2026-11-19)
 
 - **Translation keys are now English.** Components call `__('Delete')` instead of `__('削除')`. `lang/en.json` is gone and

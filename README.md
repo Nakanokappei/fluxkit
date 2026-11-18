@@ -7,7 +7,7 @@ Plain building blocks like buttons, inputs and modals are left to Flux; fluxkit 
 - Requirements: PHP 8.4+, Laravel 13, Livewire 4, Flux 2, Tailwind v4 (Vite)
 - Usage (installation, Tailwind and JS setup, props and examples per component, rules to follow): [SKILL.md](SKILL.md)
   (doubles as a Claude Code skill; copy it to `~/.claude/skills/fluxkit/SKILL.md` to have it loaded in every project)
-- Component preview: `GET /fluxkit-preview` in development (`APP_ENV=local`)
+- Component preview: `GET /fluxkit-preview` in development (`APP_ENV=local`) — a sample user management screen built from all 20 components
 - UI text is English; a Japanese translation ships in `lang/ja.json`
 
 ## Installation (summary)
