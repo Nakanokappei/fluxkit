@@ -254,7 +254,8 @@ Standardize tables as: frame is `card class="overflow-x-auto"`, header is `table
 ### search-input
 
 - props: `model` (property receiving `wire:model.live.debounce`), `label` (aria-label), `debounce` (milliseconds; default 400)
-- Attributes go to: `flux:input` (`placeholder`, `size`, `class`, `data-test`). type=search, magnifying glass, clear with the × in the field
+- Attributes go to: `class` to a wrapping `<div>` (so width classes such as `w-72` work; full width without one), everything
+  else to `flux:input` (`placeholder`, `size`, `data-test`). type=search, magnifying glass, clear with the × in the field
 - Do not use it for fields that search only when a button is pressed
 
 ```blade

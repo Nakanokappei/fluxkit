@@ -45,10 +45,7 @@
 
         {{-- Toolbar: type-to-filter search, a role filter and the invite button. --}}
         <div class="flex flex-wrap items-center gap-2">
-            {{-- flux:input's wrapper is w-full, so the width is set on a wrapping div. --}}
-            <div class="w-72">
-                <x-fluxkit::search-input model="search" label="Search users" placeholder="Search by name or email" />
-            </div>
+            <x-fluxkit::search-input model="search" label="Search users" placeholder="Search by name or email" class="w-72" />
             <flux:select size="sm" class="w-36" aria-label="Role">
                 <flux:select.option>All roles</flux:select.option>
                 <flux:select.option>Admin</flux:select.option>
